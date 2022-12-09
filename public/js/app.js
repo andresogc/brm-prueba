@@ -5373,6 +5373,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -5390,7 +5402,8 @@ __webpack_require__.r(__webpack_exports__);
         birthday: '',
         address: '',
         email: '',
-        phone: ''
+        phone: '',
+        sexo: ''
       }
     };
   },
@@ -5417,24 +5430,27 @@ __webpack_require__.r(__webpack_exports__);
     },
     saveContact: function saveContact() {
       var _this2 = this;
+      var r;
       if (!this.id) {
-        axios.post('/users', this.contact).then(function (response) {
+        r = axios.post('/users', this.contact).then(function (response) {
           _this2.$swal('Creado correctamente');
         })["catch"](function (err) {
-          console.log(err);
+          return _this2.$swal('Imposible crear el contacto! ' + err.response.data.message);
         });
-        this.clearForm();
-        this.$router.push('/');
       } else {
-        axios.put('/users/' + this.id, this.contact).then(function (response) {
+        r = axios.put('/users/' + this.id, this.contact).then(function (response) {
           _this2.$swal('Actualizado correctamente');
         })["catch"](function (err) {
-          console.log(err);
+          return _this2.$swal('Imposible actualizar el contacto! '.err.response.data.message);
         });
         this.enableEdit();
-        this.$router.push('/');
       }
-      location.reload();
+      r.then(function (j) {
+        if (!j) {
+          _this2.$router.push('/');
+          location.reload();
+        }
+      });
     },
     destroyContact: function destroyContact() {
       var _this3 = this;
@@ -5458,13 +5474,13 @@ __webpack_require__.r(__webpack_exports__);
       this.contact.address = '';
       this.contact.email = '';
       this.contact.phone = '';
-    },
-    modal: function modal() {
-      var myModalEl = document.getElementById('exampleModal');
-      myModalEl.addEventListener('show.bs.modal', function (event) {
-        // do something...
-      });
     }
+    /*  modal(){
+         const myModalEl = document.getElementById('exampleModal')
+         myModalEl.addEventListener('show.bs.modal', event => {
+         // do something...
+         })
+     } */
   },
   watch: {
     '$route.params.id': function $routeParamsId(newId) {
@@ -29255,6 +29271,112 @@ var render = function () {
                           },
                         },
                       }),
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "mb-3" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "form-label text-white",
+                          attrs: { for: "exampleInputPassword1" },
+                        },
+                        [_vm._v("Dirección")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.contact.address,
+                            expression: "contact.address",
+                          },
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "text",
+                          id: "address",
+                          disabled: _vm.disableInputBool,
+                          placeholder: "Dirección",
+                        },
+                        domProps: { value: _vm.contact.address },
+                        on: {
+                          input: function ($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(
+                              _vm.contact,
+                              "address",
+                              $event.target.value
+                            )
+                          },
+                        },
+                      }),
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "mb-3" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "form-label text-white",
+                          attrs: { for: "exampleInputPassword1" },
+                        },
+                        [_vm._v("Sexo")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.contact.sexo,
+                              expression: "contact.sexo",
+                            },
+                          ],
+                          attrs: {
+                            "aria-label": "Default select example",
+                            id: "sexo",
+                            disabled: _vm.disableInputBool,
+                          },
+                          on: {
+                            change: function ($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function (o) {
+                                  return o.selected
+                                })
+                                .map(function (o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.$set(
+                                _vm.contact,
+                                "sexo",
+                                $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              )
+                            },
+                          },
+                        },
+                        [
+                          _c("option", { attrs: { disabled: "" } }, [
+                            _vm._v("Seleccione sexo"),
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "option",
+                            { attrs: { value: "M", selected: "" } },
+                            [_vm._v("Masculino")]
+                          ),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "F" } }, [
+                            _vm._v("Femenino"),
+                          ]),
+                        ]
+                      ),
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "mb-3" }, [

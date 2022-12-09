@@ -34,6 +34,18 @@
                                 <input type="text" class="form-control" id="address" v-model="contact.address" :disabled="disableInputBool" placeholder="Dirección">
                             </div>
                             <div class="mb-3">
+                                <label for="exampleInputPassword1" class="form-label text-white">Dirección</label>
+                                <input type="text" class="form-control" id="address" v-model="contact.address" :disabled="disableInputBool" placeholder="Dirección">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputPassword1" class="form-label text-white">Sexo</label>
+                                <select  aria-label="Default select example" id="sexo" v-model="contact.sexo" :disabled="disableInputBool"  >
+                                    <option  disabled>Seleccione sexo</option>
+                                    <option value="M" selected>Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
                                 <label for="exampleInputEmail1" class="form-label text-white">Email</label>
                                 <input type="email" class="form-control" id="email" aria-describedby="email" v-model="contact.email" :disabled="disableInputBool" placeholder="Email">
                             </div>
@@ -76,6 +88,7 @@
                     address:'',
                     email:'',
                     phone:'',
+                    sexo:''
                 },
             }
         },
@@ -103,27 +116,30 @@
                 }
             },
             saveContact(){
-
+                let r
                 if(!this.id){
-                    axios.post('/users',this.contact).then(response=>{
+                    r = axios.post('/users',this.contact).then(response=>{
                         this.$swal('Creado correctamente')
                     }).catch(err=>{
-                        console.log(err)
+                        return this.$swal('Imposible crear el contacto! '+ err.response.data.message);
                     })
-                    this.clearForm();
-
-                    this.$router.push('/')
+                  
                 }else{
-                    axios.put('/users/'+this.id,this.contact).then(response=>{
+                    r = axios.put('/users/'+this.id,this.contact).then(response=>{
                         this.$swal('Actualizado correctamente')
                     }).catch(err=>{
-                        console.log(err)
+                        return this.$swal('Imposible actualizar el contacto! '. err.response.data.message)
                     })
                     this.enableEdit();
-
-                    this.$router.push('/');
                 }
-                location.reload()
+                r.then(j=>{
+                    if(!j){
+                        this.$router.push('/')
+                        location.reload()
+                    }
+                });
+
+
             },
             destroyContact(){
                 axios.delete('users/'+this.id)
@@ -145,12 +161,12 @@
                 this.contact.email='';
                 this.contact.phone='';
             },
-            modal(){
+           /*  modal(){
                 const myModalEl = document.getElementById('exampleModal')
                 myModalEl.addEventListener('show.bs.modal', event => {
                 // do something...
                 })
-            }
+            } */
 
         },
         watch:{

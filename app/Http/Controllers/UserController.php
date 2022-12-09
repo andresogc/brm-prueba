@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use DateTime;
 
 class UserController extends Controller
 {
@@ -40,13 +41,16 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   $validator = Validator::make($request->all(),[
+    {
+        
+        $validator = Validator::make($request->all(),[
             'name'=> 'required|string|max:100',
             'lastname'=> 'string|max:100',
             'email'=> 'string|email|max:100|unique:users',
             'phone'=> 'string|max:20',
             'address'=> 'string|max:200',
             'birthday'=> 'date',
+            'sexo'=> 'string|max:5',
         ]);
 
         if($validator->fails()){
@@ -55,6 +59,19 @@ class UserController extends Controller
                 'message' => '¡huo un error. Por favor revise los datos e intente nuevamente!',
             ], 409);
         }
+
+        //comprobar si es mayor a 18 años
+        $birthday =  new DateTime($request->birthday);
+        $today = new DateTime();
+        $age = $today->diff($birthday);
+
+        if($age->y < 18){
+            return response()->json([
+                'success' => false,
+                'message' => '¡Debes ser mayor de edad!',
+            ], 409);
+        }
+
 
         User::create($request->all());
     }
@@ -89,21 +106,36 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {   $validator = Validator::make($request->all(),[
+    {
+        $validator = Validator::make($request->all(),[
         'name'=> 'required|string|max:100',
         'lastname'=> 'string|max:100',
         //'email'=> 'string|email|max:100|unique:users',
         'phone'=> 'string|max:20',
         'address'=> 'string|max:200',
         'birthday'=> 'date',
+        'sexo'=> 'string|max:5',
         ]);
 
         if($validator->fails()){
             return response()->json([
                 'success' => false,
-                'message' => '¡huo un error. Por favor revise los datos e intente nuevamente!',
+                'message' => '¡hubo un error. Por favor revise los datos e intente nuevamente!',
             ], 409);
         }
+
+        //comprobar si es mayor a 18 años
+        $birthday =  new DateTime($request->birthday);
+        $today = new DateTime();
+        $age = $today->diff($birthday);
+
+        if($age->y < 18){
+            return response()->json([
+                'success' => false,
+                'message' => '¡Debes ser mayor de edad!',
+            ], 409);
+        }
+
         user::find($id)->update($request->all());
 
 

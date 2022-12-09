@@ -20,6 +20,7 @@ class UserFactory extends Factory
             'birthday' => date("Y-m-d", mt_rand(0, 500000000)),
             'address' => $this->faker->address(),
             'email' => $this->faker->unique()->safeEmail(),
+            'sexo' => $this->faker->randomElement(['M','F']),
             'phone' => $this->faker->phoneNumber(),
         ];
     }
